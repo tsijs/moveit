@@ -41,7 +41,7 @@
 #include <moveit/collision_distance_field/collision_distance_field_types.h>
 #include <moveit/collision_distance_field/collision_world_distance_field.h>
 #include <moveit/collision_distance_field/collision_robot_distance_field.h>
-
+#define protected public
 namespace collision_detection
 {
 class CollisionRobotHybrid;

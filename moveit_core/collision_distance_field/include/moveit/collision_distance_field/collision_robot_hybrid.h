@@ -41,6 +41,7 @@
 #include <moveit/collision_distance_field/collision_distance_field_types.h>
 #include <moveit/collision_distance_field/collision_common_distance_field.h>
 #include <moveit/collision_distance_field/collision_robot_distance_field.h>
+#define protected public
 
 #include <boost/thread/mutex.hpp>
 

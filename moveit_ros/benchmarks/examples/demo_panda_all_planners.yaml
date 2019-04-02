@@ -27,7 +27,4 @@ benchmark_config:
         - plugin: chomp_interface/CHOMPPlanner
           planners:
             - CHOMP
-        - plugin: stomp_moveit/StompPlannerManager
-          planners:
-            - STOMP
 

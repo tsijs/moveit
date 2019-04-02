@@ -43,6 +43,7 @@
 #include <sstream>
 #include <memory>
 #include <float.h>
+#define protected public
 
 #include <geometric_shapes/shapes.h>
 #include <geometric_shapes/bodies.h>
