@@ -75,6 +75,12 @@ public:
   void distanceRobot(const DistanceRequest& req, DistanceResult& res, const CollisionRobot& robot,
                      const robot_state::RobotState& state) const override;
 
+  void distanceRobot(const DistanceRequest& req,
+                             DistanceResult& res,
+                             const CollisionRobot& robot,
+                             const robot_state::RobotState& state1,
+                             const robot_state::RobotState& state2) const override; 
+
   void distanceWorld(const DistanceRequest& req, DistanceResult& res, const CollisionWorld& world) const override;
 
   void setWorld(const WorldPtr& world) override;

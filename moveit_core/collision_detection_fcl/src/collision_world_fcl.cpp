@@ -288,6 +288,15 @@ void CollisionWorldFCL::distanceRobot(const DistanceRequest& req, DistanceResult
     manager_->distance(fcl_obj.collision_objects_[i].get(), &drd, &distanceCallback);
 }
 
+void CollisionWorldFCL::distanceRobot(const DistanceRequest& req,
+                             DistanceResult& res,
+                             const CollisionRobot& robot,
+                             const robot_state::RobotState& state1,
+                             const robot_state::RobotState& state2) const 
+{
+    ROS_ERROR_NAMED("collision_detection.fcl", "FCL continuous collision checking not yet implemented");
+} 
+
 void CollisionWorldFCL::distanceWorld(const DistanceRequest& req, DistanceResult& res,
                                       const CollisionWorld& world) const
 {

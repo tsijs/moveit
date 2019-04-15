@@ -217,6 +217,18 @@ public:
    *  @param state The state for the robot to check distances from */
   virtual void distanceRobot(const DistanceRequest& req, DistanceResult& res, const CollisionRobot& robot,
                              const robot_state::RobotState& state) const = 0;
+  
+  /** \brief Continuously compute the distance between a robot and the world 
+   *  @param req A DistanceRequest object that encapsulates the distance request
+   *  @param res A DistanceResult object that encapsulates the distance result
+   *  @param robot The robot to check distance for
+   *  @param state1 The state for the robot to check distances from 
+   *  @param state2 The state for the robot to check distances from */
+  virtual void distanceRobot(const DistanceRequest& req,
+                             DistanceResult& res,
+                             const CollisionRobot& robot,
+                             const robot_state::RobotState& state1,
+                             const robot_state::RobotState& state2) const = 0; 
 
   /** \brief The shortest distance to another world instance (\e world)
    *  @param verbose Output debug information about distance checks */
