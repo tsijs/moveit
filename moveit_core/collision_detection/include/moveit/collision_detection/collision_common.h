@@ -42,6 +42,8 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <unordered_map>
+
 #include <set>
 #include <Eigen/Core>
 #include <moveit/robot_model/robot_model.h>
@@ -49,6 +51,45 @@
 namespace collision_detection
 {
 MOVEIT_CLASS_FORWARD(AllowedCollisionMatrix);
+
+template <typename T>
+using AlignedVector = std::vector<T, Eigen::aligned_allocator<T>>;
+
+template <typename Key, typename Value>
+using AlignedMap = std::map<Key, Value, std::less<Key>, Eigen::aligned_allocator<std::pair<const Key, Value>>>;
+
+template <typename Key, typename Value>
+using AlignedUnorderedMap = std::unordered_map<Key,
+                                               Value,
+                                               std::hash<Key>,
+                                               std::equal_to<Key>,
+                                               Eigen::aligned_allocator<std::pair<const Key, Value>>>;
+
+using VectorIsometry3d = AlignedVector<Eigen::Isometry3d>;
+using VectorVector4d = AlignedVector<Eigen::Vector4d>;
+using VectorVector3d = std::vector<Eigen::Vector3d>;
+using TransformMap = AlignedMap<std::string, Eigen::Isometry3d>;
+
+typedef Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> TrajArray;
+
+
+namespace CollisionObjectTypes
+{
+enum CollisionObjectType
+{
+  UseShapeType = 0, /**< @brief Infer the type from the type specified in the shapes::Shape class */
+
+  // These convert the meshes to custom collision objects
+  ConvexHull =
+      1, /**< @brief Use the mesh in shapes::Shape but make it a convex hulls collision object. (if not convex it will
+            be converted) */
+  MultiSphere = 2, /**< @brief Use the mesh and represent it by multiple spheres collision object */
+  SDF = 3          /**< @brief Use the mesh and rpresent it by a signed distance fields collision object */
+};
+}
+typedef CollisionObjectTypes::CollisionObjectType CollisionObjectType;
+typedef std::vector<CollisionObjectType> CollisionObjectTypeVector;
+
 
 /** \brief The types of bodies that are considered for collision */
 namespace BodyTypes
@@ -66,6 +107,31 @@ enum Type
   WORLD_OBJECT
 };
 }
+
+
+namespace ContinouseCollisionTypes
+{
+enum ContinouseCollisionType
+{
+  CCType_None,
+  CCType_Time0,
+  CCType_Time1,
+  CCType_Between
+};
+}
+typedef ContinouseCollisionTypes::ContinouseCollisionType ContinouseCollisionType;
+
+namespace ContactTestTypes
+{
+enum ContactTestType
+{
+  FIRST = 0,   /**< Return at first contact for any pair of objects */
+  CLOSEST = 1, /**< Return the global minimum for a pair of objects */
+  ALL = 2,     /**< Return all contacts for a pair of objects */
+  LIMITED = 3  /**< Return limited set of contacts for a pair of objects */
+};
+}
+typedef ContactTestTypes::ContactTestType ContactTestType;
 
 /** \brief The types of bodies that are considered for collision */
 typedef BodyTypes::Type BodyType;
@@ -300,7 +366,7 @@ struct DistanceResultsData
 
   /// The distance between two objects. If two objects are in collision, distance <= 0.
   double distance;
-
+  int type_id[2];
   /// The nearest points
   Eigen::Vector3d nearest_points[2];
 
@@ -309,6 +375,11 @@ struct DistanceResultsData
 
   /// The object body type
   BodyType body_types[2];
+
+  Eigen::Vector3d cc_nearest_points[2];
+  double cc_time;
+  ContinouseCollisionType cc_type;
+
 
   /** Normalized vector connecting closest points (from link_names[0] to link_names[1])
 
@@ -328,7 +399,16 @@ struct DistanceResultsData
     link_names[0] = "";
     link_names[1] = "";
     normal.setZero();
+    type_id[0] = 0;
+    type_id[1] = 0;
+    cc_nearest_points[0].setZero();
+    cc_nearest_points[1].setZero();
+    cc_time = -1;
+    cc_type = ContinouseCollisionType::CCType_None;
   }
+
+  typedef AlignedVector<DistanceResultsData> DistanceResultsDataVector;
+  typedef AlignedMap<std::pair<std::string, std::string>, DistanceResultsDataVector> DistanceResultsDataMap;
 
   /// Update structure data given DistanceResultsData object
   void operator=(const DistanceResultsData& other)
