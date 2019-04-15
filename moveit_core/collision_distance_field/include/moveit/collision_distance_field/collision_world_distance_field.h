@@ -131,6 +131,7 @@ public:
   {
     return 0.0;
   }
+  
   virtual double distanceWorld(const CollisionWorld& world, bool verbose = false) const
   {
     return 0.0;
@@ -143,6 +144,15 @@ public:
 
   void distanceRobot(const DistanceRequest& req, DistanceResult& res, const CollisionRobot& robot,
                      const robot_state::RobotState& state) const override
+  {
+    ROS_ERROR_NAMED("collision_distance_field", "Not implemented");
+  }
+
+  void distanceRobot(const DistanceRequest& req,
+                             DistanceResult& res,
+                             const CollisionRobot& robot,
+                             const robot_state::RobotState& state1,
+                             const robot_state::RobotState& state2) const override
   {
     ROS_ERROR_NAMED("collision_distance_field", "Not implemented");
   }
