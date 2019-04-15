@@ -72,6 +72,7 @@ using TransformMap = AlignedMap<std::string, Eigen::Isometry3d>;
 
 typedef Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> TrajArray;
 
+typedef std::function<bool(const std::string&, const std::string&)> IsContactAllowedFn;
 
 namespace CollisionObjectTypes
 {
@@ -407,8 +408,7 @@ struct DistanceResultsData
     cc_type = ContinouseCollisionType::CCType_None;
   }
 
-  typedef AlignedVector<DistanceResultsData> DistanceResultsDataVector;
-  typedef AlignedMap<std::pair<std::string, std::string>, DistanceResultsDataVector> DistanceResultsDataMap;
+  
 
   /// Update structure data given DistanceResultsData object
   void operator=(const DistanceResultsData& other)
@@ -436,6 +436,8 @@ struct DistanceResultsData
   }
 };
 
+typedef AlignedVector<DistanceResultsData> DistanceResultsDataVector;
+typedef AlignedMap<std::pair<std::string, std::string>, DistanceResultsDataVector> DistanceResultsDataMap;
 typedef std::map<const std::pair<std::string, std::string>, std::vector<DistanceResultsData> > DistanceMap;
 
 struct DistanceResult
@@ -461,6 +463,118 @@ struct DistanceResult
     distances.clear();
   }
 };
+
+
+
+/// Contact test data and query results information
+struct ContactTestData
+{
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
+  ContactTestData(const std::vector<std::string>& active,
+                  const double& contact_distance,
+                  const IsContactAllowedFn& fn,
+                  const ContactTestType& type,
+                  DistanceResultsDataMap& res)
+    : active(active), contact_distance(contact_distance), fn(fn), type(type), res(res), done(false)
+  {
+  }
+
+  const std::vector<std::string>& active;
+  const double& contact_distance;
+  const IsContactAllowedFn& fn;
+  const ContactTestType& type;
+
+  /// Destance query results information
+  DistanceResultsDataMap& res;
+
+  /// Indicate if search is finished
+  bool done;
+};
+
+static inline void moveContactResultsMapToContactResultsVector(DistanceResultsDataMap& contact_map,
+                                                               DistanceResultsDataVector& contact_vector)
+{
+  std::size_t size = 0;
+  for (const auto& contact : contact_map)
+    size += contact.second.size();
+
+  contact_vector.reserve(size);
+  for (auto& contact : contact_map)
+    std::move(contact.second.begin(), contact.second.end(), std::back_inserter(contact_vector));
+}
+#if 0
+
+/** @brief This holds a state of the environment */
+struct EnvState
+{
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
+  std::unordered_map<std::string, double> joints;
+  TransformMap transforms;
+};
+typedef std::shared_ptr<EnvState> EnvStatePtr;
+typedef std::shared_ptr<const EnvState> EnvStateConstPtr;
+
+/**< @brief Information on how the object is attached to the environment */
+struct AttachedBodyInfo
+{
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
+  AttachedBodyInfo() : transform(Eigen::Isometry3d::Identity()) {}
+  std::string object_name;              /**< @brief The name of the AttachableObject being used */
+  std::string parent_link_name;         /**< @brief The name of the link to attach the body */
+  Eigen::Isometry3d transform;          /**< @brief The transform between parent link and object */
+  std::vector<std::string> touch_links; /**< @brief The names of links which the attached body is allowed to be in
+                                           contact with */
+};
+
+/** @brief Contains visual geometry data */
+struct VisualObjectGeometry
+{
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
+  std::vector<shapes::ShapeConstPtr> shapes; /**< @brief The shape */
+  VectorIsometry3d shape_poses;              /**< @brief The pose of the shape */
+  VectorVector4d shape_colors;               /**< @brief (Optional) The shape color (R, G, B, A) */
+};
+
+/** @brief Contains visual geometry data */
+struct CollisionObjectGeometry : public VisualObjectGeometry
+{
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
+  CollisionObjectTypeVector
+      collision_object_types; /**< @brief The collision object type. This is used by the collision libraries */
+};
+
+/** @brief Contains data about an attachable object */
+struct AttachableObject
+{
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
+  std::string name;            /**< @brief The name of the attachable object (aka. link name and must be unique) */
+  VisualObjectGeometry visual; /**< @brief The objects visual geometry */
+  CollisionObjectGeometry collision; /**< @brief The objects collision geometry */
+};
+typedef std::shared_ptr<AttachableObject> AttachableObjectPtr;
+typedef std::shared_ptr<const AttachableObject> AttachableObjectConstPtr;
+
+/** @brief ObjectColorMap Stores Object color in a 4d vector as RGBA*/
+struct ObjectColor
+{
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
+  VectorVector4d visual;
+  VectorVector4d collision;
+};
+typedef AlignedUnorderedMap<std::string, ObjectColor> ObjectColorMap;
+typedef std::shared_ptr<ObjectColorMap> ObjectColorMapPtr;
+typedef std::shared_ptr<const ObjectColorMap> ObjectColorMapConstPtr;
+typedef AlignedUnorderedMap<std::string, AttachedBodyInfo> AttachedBodyInfoMap;
+typedef std::unordered_map<std::string, AttachableObjectConstPtr> AttachableObjectConstPtrMap;
+
+#endif
 }
 
 #endif
