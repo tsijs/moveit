@@ -358,6 +358,8 @@ struct DistanceRequest
   bool compute_gradient;
 };
 
+
+// NOTE: this struct is appended with some properties to be used with tesseract
 struct DistanceResultsData
 {
   DistanceResultsData()
@@ -374,6 +376,9 @@ struct DistanceResultsData
   /// The object link names
   std::string link_names[2];
 
+  // TODO: add this! attached link names for attached body support
+  // std::string attached_link_names[2];
+
   /// The object body type
   BodyType body_types[2];
 
@@ -388,6 +393,9 @@ struct DistanceResultsData
       However, FCL in case of non-convex to non-convex or convex to non-convex returns
       the contact normal for one of the two triangles that are in contact. */
   Eigen::Vector3d normal;
+  
+  // should probably be removed, since doesn't exist in trajopt/tesseract anymore??
+  bool valid;
 
   /// Clear structure data
   void clear()
@@ -406,6 +414,7 @@ struct DistanceResultsData
     cc_nearest_points[1].setZero();
     cc_time = -1;
     cc_type = ContinouseCollisionType::CCType_None;
+    valid = false;
   }
 
   
@@ -421,6 +430,13 @@ struct DistanceResultsData
     body_types[0] = other.body_types[0];
     body_types[1] = other.body_types[1];
     normal = other.normal;
+    type_id[0] = other.type_id[0];
+    type_id[1] = other.type_id[1];
+    cc_nearest_points[0] = other.cc_nearest_points[0];
+    cc_nearest_points[1] = other.cc_nearest_points[1];
+    cc_time = other.cc_time;
+    cc_type = other.cc_type;
+    valid = other.valid;
   }
 
   /// Compare if the distance is less than another
@@ -503,78 +519,6 @@ static inline void moveContactResultsMapToContactResultsVector(DistanceResultsDa
   for (auto& contact : contact_map)
     std::move(contact.second.begin(), contact.second.end(), std::back_inserter(contact_vector));
 }
-#if 0
-
-/** @brief This holds a state of the environment */
-struct EnvState
-{
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-
-  std::unordered_map<std::string, double> joints;
-  TransformMap transforms;
-};
-typedef std::shared_ptr<EnvState> EnvStatePtr;
-typedef std::shared_ptr<const EnvState> EnvStateConstPtr;
-
-/**< @brief Information on how the object is attached to the environment */
-struct AttachedBodyInfo
-{
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-
-  AttachedBodyInfo() : transform(Eigen::Isometry3d::Identity()) {}
-  std::string object_name;              /**< @brief The name of the AttachableObject being used */
-  std::string parent_link_name;         /**< @brief The name of the link to attach the body */
-  Eigen::Isometry3d transform;          /**< @brief The transform between parent link and object */
-  std::vector<std::string> touch_links; /**< @brief The names of links which the attached body is allowed to be in
-                                           contact with */
-};
-
-/** @brief Contains visual geometry data */
-struct VisualObjectGeometry
-{
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-
-  std::vector<shapes::ShapeConstPtr> shapes; /**< @brief The shape */
-  VectorIsometry3d shape_poses;              /**< @brief The pose of the shape */
-  VectorVector4d shape_colors;               /**< @brief (Optional) The shape color (R, G, B, A) */
-};
-
-/** @brief Contains visual geometry data */
-struct CollisionObjectGeometry : public VisualObjectGeometry
-{
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-
-  CollisionObjectTypeVector
-      collision_object_types; /**< @brief The collision object type. This is used by the collision libraries */
-};
-
-/** @brief Contains data about an attachable object */
-struct AttachableObject
-{
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-
-  std::string name;            /**< @brief The name of the attachable object (aka. link name and must be unique) */
-  VisualObjectGeometry visual; /**< @brief The objects visual geometry */
-  CollisionObjectGeometry collision; /**< @brief The objects collision geometry */
-};
-typedef std::shared_ptr<AttachableObject> AttachableObjectPtr;
-typedef std::shared_ptr<const AttachableObject> AttachableObjectConstPtr;
-
-/** @brief ObjectColorMap Stores Object color in a 4d vector as RGBA*/
-struct ObjectColor
-{
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-
-  VectorVector4d visual;
-  VectorVector4d collision;
-};
-typedef AlignedUnorderedMap<std::string, ObjectColor> ObjectColorMap;
-typedef std::shared_ptr<ObjectColorMap> ObjectColorMapPtr;
-typedef std::shared_ptr<const ObjectColorMap> ObjectColorMapConstPtr;
-typedef AlignedUnorderedMap<std::string, AttachedBodyInfo> AttachedBodyInfoMap;
-typedef std::unordered_map<std::string, AttachableObjectConstPtr> AttachableObjectConstPtrMap;
-
-#endif
 }
 
 #endif

@@ -193,6 +193,15 @@ public:
   virtual void distanceSelf(const DistanceRequest& req, DistanceResult& res,
                             const robot_state::RobotState& state) const = 0;
 
+  /** \brief The distance to self-collision given the robot is at state \e state.
+    @param req A DistanceRequest object that encapsulates the distance request
+    @param res A DistanceResult object that encapsulates the distance result
+    @param state The state of this robot to consider */
+  virtual void distanceSelf(const DistanceRequest& req,
+                            DistanceResult& res,
+                            const robot_state::RobotState& state1,
+                            const robot_state::RobotState& state2) const = 0;
+
   /** \brief The distance to another robot instance.
 
 

@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>collision_detection_bullet</name>
+  <version>0.1.0</version>
+  <description>The bullet collision detection moveit plugin package</description>
+  <maintainer email="levi.armstrong@swri.org">Levi Armstrong</maintainer>
+  <license>BSD</license>
+  <author>Levi Armstrong</author>
+  <author>John Schulman</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>roscpp</depend>
+  <depend>trajopt</depend>
+  <depend>libccd_ros</depend>
+  <depend>fcl_ros</depend>
+  <depend>bullet3_ros</depend>
+  <depend>urdf</depend>
+  <depend>moveit_core</depend>
+  <depend>moveit_ros_planning</depend>
+  <depend>pluginlib</depend>
+  <depend>tesseract_ros</depend>
+  <depend>trajopt_test_support</depend>
+  
+  <test_depend>gtest</test_depend>
+  <test_depend>rostest</test_depend>
+  <test_depend>roslib</test_depend>
+
+
+  <!-- The export tag contains other, unspecified, tags -->
+  <export>
+    <moveit_core plugin="${prefix}/moveit_collision_detection_bullet_plugin_description.xml"/>
+  </export>
+</package>

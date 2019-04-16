@@ -157,6 +157,15 @@ public:
   {
     return 0.0;
   };
+  
+  virtual void distanceSelf(const DistanceRequest& req,
+                            DistanceResult& res,
+                            const robot_state::RobotState& state1,
+                            const robot_state::RobotState& state2) const  
+  {
+    ROS_ERROR_NAMED("FCL collision robot fcl header:","Continuous collision checking not implemented for FCL!"); 
+  };
+
   virtual double distanceOther(const moveit::core::RobotState& state, const CollisionRobot& other_robot,
                                const moveit::core::RobotState& other_state) const
   {
