@@ -37,7 +37,7 @@
 #ifndef MOVEIT_COLLISION_DETECTION_BULLET_COLLISION_WORLD_
 #define MOVEIT_COLLISION_DETECTION_BULLET_COLLISION_WORLD_
 
-#include <vollision_detection_bullet/collision_robot_bullet.h>
+#include <collision_detection_bullet/collision_robot_bullet.h>
 #include <memory>
 #include <moveit/macros/deprecation.h>
 
