@@ -36,8 +36,6 @@ catkin_package(
     include
     ${EIGEN3_INCLUDE_DIRS}
   LIBRARIES
-    ${PROJECT_NAME}
-    ${OCTOMAP_LIBRARIES}
     moveit_collision_detection_bullet
   CATKIN_DEPENDS
     roscpp
@@ -70,13 +68,6 @@ include_directories(
   SYSTEM ${OCTOMAP_INCLUDE_DIRS}
 )
 
-# add_library(${PROJECT_NAME}
-#   src/trajopt_moveit_env.cpp
-# )
-
-# target_link_libraries(${PROJECT_NAME} ${OCTOMAP_LIBRARIES} ${Boost_SYSTEM_LIBRARY} ${catkin_LIBRARIES})
-
-
 add_library(moveit_collision_detection_bullet
   src/collision_common.cpp
   src/collision_robot_bullet.cpp
@@ -88,29 +79,3 @@ target_link_libraries(moveit_collision_detection_bullet ${catkin_LIBRARIES} ${co
 add_library(moveit_collision_detection_bullet_plugin src/collision_detector_allocator_bullet.cpp)
 target_link_libraries(moveit_collision_detection_bullet_plugin moveit_collision_detection_bullet ${catkin_LIBRARIES})
 
-# if (CATKIN_ENABLE_TESTING)
-# 
-#   find_package(rostest REQUIRED)
-#   find_package(catkin REQUIRED COMPONENTS octomap_ros trajopt_test_support roslib)
-#   find_package(PCL REQUIRED COMPONENTS core features filters io segmentation surface)
-# 
-#   include_directories(
-#     test
-#     ${PCL_INCLUDE_DIRS}
-#   )
-# 
-#   add_rostest_gtest(${PROJECT_NAME}_planning_unit test/planning_unit.launch test/planning_unit.cpp)
-#   target_link_libraries(${PROJECT_NAME}_planning_unit ${PROJECT_NAME} ${Boost_SYSTEM_LIBRARY} ${Boost_PROGRAM_OPTIONS_LIBRARY} ${catkin_LIBRARIES})
-# 
-#   add_rostest_gtest(${PROJECT_NAME}_cast_cost_unit test/cast_cost_unit.launch test/cast_cost_unit.cpp)
-#   target_link_libraries(${PROJECT_NAME}_cast_cost_unit ${PROJECT_NAME} ${Boost_SYSTEM_LIBRARY} ${Boost_PROGRAM_OPTIONS_LIBRARY} ${catkin_LIBRARIES})
-# 
-#   add_rostest_gtest(${PROJECT_NAME}_cast_cost_world_unit test/cast_cost_world_unit.launch test/cast_cost_world_unit.cpp)
-#   target_link_libraries(${PROJECT_NAME}_cast_cost_world_unit ${PROJECT_NAME} ${Boost_SYSTEM_LIBRARY} ${Boost_PROGRAM_OPTIONS_LIBRARY} ${catkin_LIBRARIES})
-# 
-#   add_rostest_gtest(${PROJECT_NAME}_cast_cost_attached_unit test/cast_cost_attached_unit.launch test/cast_cost_attached_unit.cpp)
-#   target_link_libraries(${PROJECT_NAME}_cast_cost_attached_unit ${PROJECT_NAME} ${Boost_SYSTEM_LIBRARY} ${Boost_PROGRAM_OPTIONS_LIBRARY} ${catkin_LIBRARIES})
-# 
-#   add_rostest_gtest(${PROJECT_NAME}_cast_cost_octomap_unit test/cast_cost_octomap_unit.launch test/cast_cost_octomap_unit.cpp)
-#   target_link_libraries(${PROJECT_NAME}_cast_cost_octomap_unit ${PROJECT_NAME} ${Boost_SYSTEM_LIBRARY} ${Boost_PROGRAM_OPTIONS_LIBRARY} ${PCL_LIBRARIES} ${catkin_LIBRARIES})
-# endif()

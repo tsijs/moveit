@@ -45,8 +45,13 @@
 #include <set>
 #include <moveit/macros/deprecation.h>
 #include <btBulletCollisionCommon.h>
-#include <tesseract_core/basic_types.h>
 #include <ros/ros.h>
+
+// TODO this is the only dependency on tesseract in this package it seems. Get rid of it. It should not depend on this anymore since collision_common in
+// moveit is updated with the needed changes (I think/hope)
+#include <tesseract_core/basic_types.h> 
+
+
 
 namespace collision_detection
 {

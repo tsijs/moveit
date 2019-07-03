@@ -71,7 +71,7 @@ bool ChompPlanner::solve(const planning_scene::PlanningSceneConstPtr& planning_s
   }
 
   ros::WallTime start_time = ros::WallTime::now();
-  ChompTrajectory trajectory(planning_scene->getRobotModel(), 3.0, .03, req.group_name);
+  ChompTrajectory trajectory(planning_scene->getRobotModel(), 3.0, .01, req.group_name);
 
   jointStateToArray(planning_scene->getRobotModel(), req.start_state.joint_state, req.group_name,
                     trajectory.getTrajectoryPoint(0));

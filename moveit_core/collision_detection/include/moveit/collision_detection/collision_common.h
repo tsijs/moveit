@@ -507,17 +507,30 @@ struct ContactTestData
   /// Indicate if search is finished
   bool done;
 };
-
-static inline void moveContactResultsMapToContactResultsVector(DistanceResultsDataMap& contact_map,
-                                                               DistanceResultsDataVector& contact_vector)
+static inline void moveDistanceResultsVectorMapToDistanceResultsVector(DistanceResultsDataMap& distance_vector_map,
+                                                               DistanceResultsDataVector& distance_vector)
 {
   std::size_t size = 0;
-  for (const auto& contact : contact_map)
-    size += contact.second.size();
+  for (const auto& distance : distance_vector_map)
+    size += distance.second.size();
 
-  contact_vector.reserve(size);
-  for (auto& contact : contact_map)
-    std::move(contact.second.begin(), contact.second.end(), std::back_inserter(contact_vector));
+  distance_vector.reserve(size);
+  for (auto& distance : distance_vector_map)
+    std::move(distance.second.begin(), distance.second.end(), std::back_inserter(distance_vector));
+}
+
+static inline void moveDistanceResultsMapToDistanceResultsVector(DistanceMap& distance_map,
+                                                               DistanceResultsDataVector& distance_vector)
+{
+  std::size_t size = 0;
+  for (const auto& distance : distance_map)
+    size += distance.second.size();
+
+  // distance_vector.reserve(size);
+  for (auto& distance : distance_map)
+    std::move(distance.second.begin(), distance.second.end(), std::back_inserter(distance_vector));
+    // distance_vector.push_back(distance.second);
+    
 }
 }
 
